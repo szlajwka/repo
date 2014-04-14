@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 /**
  * Created by wodzu on 01.04.14.
@@ -20,6 +21,9 @@ public class Logowanie extends JFrame {
     JLabel l1;
     JLabel l2;
     public Logowanie(){
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        }catch(Exception e){}
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocation(200, 200);
         setSize(200, 300);
@@ -106,7 +110,11 @@ public class Logowanie extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new Sklep(email.getText());
+                try {
+                    new Sklep(email.getText());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         add(l1);

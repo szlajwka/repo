@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_aplikacje" default="compile.module.aplikacje">
+  <dirname property="module.aplikacje.basedir" file="${ant.file.module_aplikacje}"/>
+  
+  <property name="module.jdk.home.aplikacje" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.aplikacje" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.aplikacje" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.aplikacje" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="aplikacje.output.dir" value="${module.aplikacje.basedir}/out/production/Aplikacje"/>
+  <property name="aplikacje.testoutput.dir" value="${module.aplikacje.basedir}/out/test/Aplikacje"/>
+  
+  <path id="aplikacje.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="aplikacje.module.production.classpath">
+    <path refid="${module.jdk.classpath.aplikacje}"/>
+  </path>
+  
+  <path id="aplikacje.runtime.production.module.classpath">
+    <pathelement location="${aplikacje.output.dir}"/>
+  </path>
+  
+  <path id="aplikacje.module.classpath">
+    <path refid="${module.jdk.classpath.aplikacje}"/>
+    <pathelement location="${aplikacje.output.dir}"/>
+  </path>
+  
+  <path id="aplikacje.runtime.module.classpath">
+    <pathelement location="${aplikacje.testoutput.dir}"/>
+    <pathelement location="${aplikacje.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.aplikacje">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.aplikacje">
+    <patternset refid="excluded.from.module.aplikacje"/>
+  </patternset>
+  
+  <path id="aplikacje.module.sourcepath">
+    <dirset dir="${module.aplikacje.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.aplikacje" depends="compile.module.aplikacje.production,compile.module.aplikacje.tests" description="Compile module Aplikacje"/>
+  
+  <target name="compile.module.aplikacje.production" depends="register.custom.compilers" description="Compile module Aplikacje; production classes">
+    <mkdir dir="${aplikacje.output.dir}"/>
+    <javac2 destdir="${aplikacje.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.aplikacje}/javac">
+      <compilerarg line="${compiler.args.aplikacje}"/>
+      <bootclasspath refid="aplikacje.module.bootclasspath"/>
+      <classpath refid="aplikacje.module.production.classpath"/>
+      <src refid="aplikacje.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.aplikacje"/>
+    </javac2>
+    
+    <copy todir="${aplikacje.output.dir}">
+      <fileset dir="${module.aplikacje.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.aplikacje.tests" depends="register.custom.compilers,compile.module.aplikacje.production" description="compile module Aplikacje; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.aplikacje" description="cleanup module">
+    <delete dir="${aplikacje.output.dir}"/>
+    <delete dir="${aplikacje.testoutput.dir}"/>
+  </target>
+</project>

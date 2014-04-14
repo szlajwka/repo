@@ -16,29 +16,32 @@ public class Wyglad extends JFrame{
     JButton register;
     JButton logIn;
     public Wyglad(){
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        }catch(Exception e){}
         setSize(300, 300);
         setLocation(150, 150);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new GridLayout(4, 1));
+        setLayout(new GridLayout(3, 1));
         setTitle("Computer_Land");
         setResizable(false);
         register=new JButton("Rejestruj");
         register.setToolTipText("Zarejestruj sie jesli jeszcze nie posiadasz konta");
         logIn=new JButton("Zaloguj sie");
         logIn.setToolTipText("Przejdz do ekranu logowania");
-        register.addActionListener(new ActionListener(){
+        register.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                final JFrame rejestracja=new JFrame();
+                final JFrame rejestracja = new JFrame();
                 rejestracja.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 rejestracja.setResizable(false);
-                rejestracja.setSize(250,400);
-                rejestracja.setLocation(200,200);
-                rejestracja.setLayout(new GridLayout(13,1));
-                JButton rejestruj=new JButton("Zarejestruj");
-                rejestruj.addActionListener(new ActionListener(){
+                rejestracja.setSize(250, 400);
+                rejestracja.setLocation(200, 200);
+                rejestracja.setLayout(new GridLayout(13, 1));
+                JButton rejestruj = new JButton("Zarejestruj");
+                rejestruj.addActionListener(new ActionListener() {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -47,25 +50,35 @@ public class Wyglad extends JFrame{
                         new Logowanie().setVisible(true);
                     }
                 });
-                JTextField nazwisko=new JTextField("Nazwisko/Firma");
+                JTextField nazwisko = new JTextField("Nazwisko/Firma");
                 nazwisko.addMouseListener(new Mysz(nazwisko));
-                JTextField email=new JTextField("Adres email");
+                JTextField email = new JTextField("Adres email");
                 email.addMouseListener(new Mysz(email));
-                JTextField passwrd1=new JPasswordField("Haslo");
-                JTextField passwrd2=new JPasswordField("Powtorz Haslo");
-                JTextField ulica=new JTextField("Ulica");
-                JTextField nr=new JTextField("Nr domu/mieszkania");
-                JTextField miejscowosc=new JTextField("Miejscowosc");
+                JTextField passwrd1 = new JPasswordField("Haslo");
+                JTextField passwrd2 = new JPasswordField("Powtorz Haslo");
+                JTextField ulica = new JTextField("Ulica");
+                JTextField nr = new JTextField("Nr domu/mieszkania");
+                JTextField miejscowosc = new JTextField("Miejscowosc");
                 passwrd1.addMouseListener(new Mysz(passwrd1));
                 passwrd2.addMouseListener(new Mysz(passwrd2));
                 ulica.addMouseListener(new Mysz(ulica));
                 nr.addMouseListener(new Mysz(nr));
                 miejscowosc.addMouseListener(new Mysz(miejscowosc));
-                JLabel l1=new JLabel("Podaj nazwisko/nazwe firmy");
-                JLabel l2=new JLabel("podaj adres email, bedzie to twoj identyfikator");
-                JLabel l3=new JLabel("podaj haslo");
-                JLabel l4=new JLabel("Powtorz haslo");
-                JLabel l5=new JLabel("Adres do wysylki");
+                JLabel l1 = new JLabel("Podaj nazwisko/nazwe firmy");
+                JLabel l2 = new JLabel("podaj adres email, bedzie to twoj identyfikator");
+                JLabel l3 = new JLabel("podaj haslo");
+                JLabel l4 = new JLabel("Powtorz haslo");
+                JLabel l5 = new JLabel("Adres do wysylki");
+                l1.setOpaque(true);
+                l2.setOpaque(true);
+                l3.setOpaque(true);
+                l4.setOpaque(true);
+                l5.setOpaque(true);
+                l1.setBackground(Color.YELLOW);
+                l2.setBackground(Color.YELLOW);
+                l3.setBackground(Color.YELLOW);
+                l4.setBackground(Color.YELLOW);
+                l5.setBackground(Color.YELLOW);
                 ulica.setToolTipText("Podaj ulice na ktora maja byc wysylane paczki");
                 nr.setToolTipText("Podaj nr domu/mieszkania");
                 passwrd1.setToolTipText("Podaj swoje haslo");
@@ -94,10 +107,15 @@ public class Wyglad extends JFrame{
                 new Logowanie().setVisible(true);
             }
         });
+        //logIn.setBackground(new Color(255, 40, 67));
         add(logIn);
-        add(new JLabel());
+        JPanel p1=new JPanel();
+        p1.setBackground(new Color(255, 251, 66));
+        JPanel p2=new JPanel();
+        p2.setBackground(new Color(255,255,255));
+        add(p1);
         add(register);
-        add(new JLabel());
+        //add(p2);
 
     }
     public static void main(String[]args){
