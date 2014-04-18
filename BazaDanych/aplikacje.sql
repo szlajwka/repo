@@ -172,3 +172,6 @@ dysk_twardy int references DyskTwardy(Id),
 monitor int references Monitor(Id),
 producent int references Producent(Id)
 );
+go
+alter table Hurtownia add Typ varchar(50);
+alter table Hurtownia add NazwaHurtowni varchar(50);

@@ -68,7 +68,9 @@ INSERT INTO dbo.Procesor (cena_netto, cena_brutto, waga, model, ilosc_rdzeni, ty
 	
 INSERT INTO dbo.Ram ( cena_netto, cena_brutto, waga, model, rodzaj, czestotliwosc_pracy, przepustowosc, stan_mag, producent) VALUES (443, 531, 26, '667','SO-DIMM', 667, 5300, 2, 17);
 INSERT INTO dbo.Ram ( cena_netto, cena_brutto, waga, model, rodzaj, czestotliwosc_pracy, przepustowosc, stan_mag, producent) VALUES (65, 78, 24, '514','DDR2 DIMM', 667, 5300, 3, 18);
-	
-
-
-        
+INSERT INTO dbo.Hurtownia values (4,200,10,'Procesor','Hurtownia1');
+INSERT INTO dbo.Hurtownia values (5,280,10,'Naped','Hurtownia2');
+INSERT INTO dbo.Hurtownia values (3,300,10,'Naped','Hurtownia5');
+INSERT INTO dbo.Hurtownia values (6,800,10,'KartaGraficzna','Hurtownia2');
+INSERT INTO dbo.Hurtownia values (5,500,5,'KartaGraficzna','Hurtownia2');
+INSERT INTO dbo.Ram ( cena_netto, cena_brutto, waga, model, rodzaj, czestotliwosc_pracy, przepustowosc, stan_mag, producent) VALUES (65, 78, 24, '514','DDR2 DIMM', 667, 5300, 0, 18);
