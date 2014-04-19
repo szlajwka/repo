@@ -50,7 +50,7 @@ kraj varchar(20),
 specjalizacja varchar(50)
 );
 Create table Peryferia(
-Id int primary key identity(1,1),
+Id int primary key identity(1000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -62,7 +62,7 @@ producent int references Producent(Id)
 );
 Go 
 Create table PlytaGlowna(
-Id int primary key identity(1,1),
+Id int primary key identity(2000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -77,7 +77,7 @@ producent int references Producent(Id)
 );
 Go
 Create table KartaGraficzna(
-Id int primary key identity(1,1),
+Id int primary key identity(3000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -91,7 +91,7 @@ producent int references Producent(Id)
 );
 Go
 Create table Ram(
-Id int primary key identity(1,1),
+Id int primary key identity(4000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -104,7 +104,7 @@ producent int references Producent(Id)
 );
 Go
 Create table Procesor(
-Id int primary key identity(1,1),
+Id int primary key identity(5000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -117,7 +117,7 @@ producent int references Producent(Id)
 );
 Go
 Create table Naped(
-Id int primary key identity(1,1),
+Id int primary key identity(6000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -129,7 +129,7 @@ producent int references Producent(Id)
 );
 GO
 Create table Monitor(
-Id int primary key identity(1,1),
+Id int primary key identity(7000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -143,7 +143,7 @@ producent int references Producent(Id)
 );
 GO
 Create table DyskTwardy(
-Id int primary key identity(1,1),
+Id int primary key identity(8000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,
@@ -157,7 +157,7 @@ stan_mag int not null,
 producent int references Producent(Id)
 );
 Create table ZestawPC(
-id int primary key identity(1,1),
+id int primary key identity(9000000,1),
 cena_netto int not null,
 cena_brutto int not null,
 waga int not null,

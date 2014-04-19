@@ -1,22 +1,25 @@
 Create view wszystkieProdukty As 
-Select id, stan_mag,cena_netto, 'ZestawPC' as typ from ZestawPC
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'ZestawPC' as typ from ZestawPC
 Union
-Select id, stan_mag,cena_netto, 'Ram' as typ from Ram
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'Ram' as typ from Ram
 Union
-Select id, stan_mag,cena_netto, 'Procesor' as typ from dbo.Procesor
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'Procesor' as typ from dbo.Procesor
 Union
-Select id, stan_mag,cena_netto, 'KartaGraficzna' as typ from KartaGraficzna
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'KartaGraficzna' as typ from KartaGraficzna
 Union
-Select id, stan_mag,cena_netto, 'Monitor' as typ from Monitor
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'Monitor' as typ from Monitor
 Union
-Select id, stan_mag,cena_netto, 'Peryferia' as typ from Peryferia
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'Peryferia' as typ from Peryferia
 Union
-Select id, stan_mag,cena_netto, 'Naped' as typ from Naped
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'Naped' as typ from Naped
 Union
-Select id, stan_mag,cena_netto, 'DyskTwardy' as typ from DyskTwardy
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'DyskTwardy' as typ from DyskTwardy
 Union
-Select id, stan_mag,cena_netto, 'PlytaGlowna' as typ from PlytaGlowna
+Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'PlytaGlowna' as typ from PlytaGlowna
 
+create procedure wszystko as begin
+select * from wszystkieProdukty inner join producent on Producent.id=wszystkieprodukty.producent
+end
 create procedure wyczerpane as begin
 select id, typ,cena_netto from  wszystkieprodukty where stan_mag=0
 end
@@ -77,4 +80,47 @@ select @staraIlosc=stan_mag from KartaGraficzna where id=@id
 set @staraIlosc=@staraIlosc+@ilosc
 update KartaGraficzna set stan_mag=@staraIlosc where id=@id
 end
+end
+go
+use AplikacjeSklepy
+create procedure getKartaGraficzna as begin
+select * from KartaGraficzna inner join Producent on KartaGraficzna.producent=Producent.Id
+end
+go
+create procedure getProcesor as begin
+select * from Procesor inner join Producent on Procesor.producent=Producent.Id
+end
+go
+create procedure getMonitor as begin
+select * from Monitor inner join Producent on Monitor.producent=Producent.Id
+end
+go
+create procedure getPeryferia as begin
+select * from Peryferia inner join Producent on Peryferia.producent=Producent.Id
+end
+go
+create procedure getNaped as begin
+select * from Naped inner join Producent on Naped.producent=Producent.Id
+end
+go
+create procedure getRam as begin
+select * from Ram inner join Producent on Ram.producent=Producent.Id
+end
+go
+create procedure getDyskTwardy as begin
+select * from DyskTwardy inner join Producent on DyskTwardy.producent=Producent.Id
+end
+go
+create procedure getPlytaGlowna as begin
+select * from PlytaGlowna inner join Producent on PlytaGlowna.producent=Producent.Id
+end
+go
+create view zestawPCview as
+select ZestawPC.id,ZestawPC.cena_netto,ZestawPC.cena_brutto,ZestawPC.waga,ZestawPC.model,ZestawPC.stan_mag,Naped.Model as ModelNapedu,Procesor.model as ModelProcesora,Ram.model as ModelRam, kartagraficzna.model as ModelKarty, dyskTwardy.model as ModelDysku, Monitor.model as modelMonitora,PlytaGlowna.model as ModelPlyty, producent.nazwa as nazwaProducenta from ZestawPC inner join Naped on ZestawPC.Naped=Naped.ID inner join Procesor on ZestawPC.Procesor=Procesor.ID inner join Ram on ZestawPc.ram=Ram.id inner join KartaGraficzna on KartaGraficzna.id=ZestawPC.karta_graficzna inner join DyskTwardy on ZestawPC.dysk_twardy=DyskTwardy.id inner join monitor on monitor.id=ZestawPc.monitor inner join producent on ZestawPC.producent=producent.id inner join plytaGlowna on plytaglowna.id=ZestawPc.plyta_glowna
+go
+create procedure getZestawPc as begin
+select * from zestawpcview
+end
+create procedure getItem @id int as begin
+select * from wszystkieprodukty where id=@id
 end
