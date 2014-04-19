@@ -1,3 +1,4 @@
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -7,6 +8,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
+import java.awt.Button;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -323,9 +325,6 @@ public class GUI {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			
-			System.out.println("LIST");
-			
 			String compName = "";
 			Object source = arg0.getSource();
 
@@ -337,6 +336,22 @@ public class GUI {
 			else if(source.equals(btnSwichODD)) compName = "ODD";
 			else if(source.equals(btnSwichRAM))compName = "RAM";
 			else if(source.equals(btnSwichMotherboard)) compName = "Motherboard";
+			
+			JButton b = (JButton) source;
+			
+			btnSwichHDD.getModel().setPressed(false);
+			btnSwichODD.getModel().setPressed(false);
+			btnSwichMonitor.getModel().setPressed(false);
+			btnSwichCPU.getModel().setPressed(false);
+			btnSwichGPU.getModel().setPressed(false);
+			btnSwichMotherboard.getModel().setPressed(false);
+			btnSwichIO.getModel().setPressed(false);
+			btnSwichRAM.getModel().setPressed(false);
+			
+			
+			b.getModel().setPressed(true);
+			
+			
 			
 			System.out.println(compName);
 			

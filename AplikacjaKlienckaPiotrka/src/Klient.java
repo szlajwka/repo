@@ -1,3 +1,4 @@
+
 import java.awt.EventQueue;
 import java.lang.reflect.Array;
 import java.sql.SQLException;
@@ -62,7 +63,6 @@ public class Klient implements Observer{
 			
 		}
 		else if(arg0.equals(gui.getAddToShopcartButtonsListener())){
-			System.out.println("U");
 			String[] s = ((String) arg1).split(" ");
 			int id = Integer.parseInt(s[0]);
 			int quantity = Integer.parseInt(s[1]);
@@ -109,8 +109,8 @@ public class Klient implements Observer{
 	}
 	
 	private void displayShopCart(){
-		String[] header =  {"ID","Typ","Model","Cena Netto", "Cena Brutto","StanMag", "IloscZam"};
-		String[] columnNames = {"id","typ","model",	"cena_netto",	"cena_brutto",	"stan_mag",	};
+		String[] header =  {"ID","Producent","Model","Cena Netto", "Cena Brutto","StanMag", "IloscZam"};
+		String[] columnNames = {"id","NazwaProducenta","model",	"cena_netto",	"cena_brutto",	"stan_mag",	};
 		String query;
 		//ArrayList<String[]> row = null;
 		String[] row = null;
