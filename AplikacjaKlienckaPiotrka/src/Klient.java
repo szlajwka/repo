@@ -56,7 +56,6 @@ public class Klient implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		
-		System.out.println("UPDATE");
 		if(arg0.equals(gui.getSb_listner())){
 			String compName = (String) arg1;
 			onSwitchProduct(compName);
@@ -99,7 +98,7 @@ public class Klient implements Observer{
 	
 	
 	private void onAddToShopCart(int id, int quantity){
-		if(quantity==0){
+		if(quantity>=0){
 			gui.showInfoMessage("Ilosc jest rowna zero.");
 			return;
 		}

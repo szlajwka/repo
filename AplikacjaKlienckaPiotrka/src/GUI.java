@@ -350,10 +350,7 @@ public class GUI {
 			
 			
 			b.getModel().setPressed(true);
-			
-			
-			
-			System.out.println(compName);
+
 			
 			setChanged();
 			notifyObservers(compName);
