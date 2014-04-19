@@ -1,3 +1,5 @@
+use AplikacjeSklepy
+go
 Create view wszystkieProdukty As 
 Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'ZestawPC' as typ from ZestawPC
 Union
@@ -123,7 +125,12 @@ select * from zestawpcview
 end
 go
 create procedure getItem @id int as begin
-select * from wszystkieprodukty where id=@id
+select wszystkieprodukty.id,stan_mag,cena_netto,cena_brutto,model,waga, producent, Producent.nazwa as NazwaProducenta from wszystkieprodukty inner join Producent on wszystkieprodukty.producent=Producent.id where wszystkieprodukty.id=@id
 end
 go
-exec getDyskTwardy
+create procedure getItemProducent @id int as begin
+declare @idprod int
+select @idprod=producent from wszystkieprodukty where id=@id
+select nazwa,id from producent where id=@idprod
+end 
+exec getItem 8000000
