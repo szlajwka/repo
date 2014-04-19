@@ -16,12 +16,15 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -45,6 +48,8 @@ public class GUI {
 	
 	private DefaultTableModel tableMainModel;
 	private DefaultTableModel tableShopcartModel;
+	
+	private AddToShopcartButtonsListener addToShopcartButtonsListener;
 	
 	
 	
@@ -88,6 +93,7 @@ public class GUI {
 	
 	public void addListenersAndModels(){
 		sb_listner = new SwitchButtonsListener();
+		addToShopcartButtonsListener = new AddToShopcartButtonsListener();
 		
 		btnSwichCPU.addActionListener(sb_listner);
 		btnSwichHDD.addActionListener(sb_listner);
@@ -99,7 +105,19 @@ public class GUI {
 		btnSwichRAM.addActionListener(sb_listner);
 		
 		
-		tableMainModel = new DefaultTableModel(0,0);
+		tableMainModel = new DefaultTableModel(0,0){
+			/**
+			 * Domyslnie w JTable kazda komorke mozna edytowac (zachowuja sie one ja JTextFieldy tylko troche bardziej topornie).
+			 * Ta metoda ustalamy, ze tylko przedostatnie kolumny mozna edytowac (przeznaczona na ilosc i z przyciskiem)
+			 */
+		    @Override
+			public boolean isCellEditable(int row, int column)
+		    {
+		    	if(column>=getColumnCount()-2) return true;
+		        
+		    	return false;
+		    }
+		};
 		tableMain.setModel(tableMainModel);
 		
 		tableShopcartModel = new DefaultTableModel(0,0);
@@ -117,14 +135,27 @@ public class GUI {
 		    }
 		}
 		Vector<Object> data = null;
+		
+		header = Arrays.copyOf(header, header.length + 2);
+		header[header.length - 2] = "Ilosc";
+	    header[header.length - 1] = "Dodaj";
+	    
+	    
 		tableMainModel.setColumnIdentifiers(header);
+		
 		for(String[] s: al){
 			 data = new Vector<Object>();
 			 for(int i=0; i< s.length;i++){
 				 data.add(s[i]);
 			 }
+			 data.add("0");
+			 data.add("+");
 			 tableMainModel.addRow(data);
 		}
+		/**
+		 * Klasa z neta implementujaca przyciski w tabeli
+		 */
+		ButtonColumn buttonColumn = new ButtonColumn(tableMain, addToShopcartButtonsListener.getAbstractAction(),(header.length - 1));
 	}
 	
 	public void setDataShopcartTable(ArrayList<String[]> al, String[] header){
@@ -145,9 +176,12 @@ public class GUI {
 		}
 	}
 	
+
+	
 	
 	public void addObservers(Observer o){
 		sb_listner.addObserver(o);
+		addToShopcartButtonsListener.addObserver(o);
 	}
 	
 	
@@ -268,6 +302,34 @@ public class GUI {
 		} 
 		
 	}
+	
+	
+	/**
+	 * Klasa odpowiadajaca za obsluge przycisku "+" w tabeli z asortymentem. Musialem opakowac ta klase poniewaz potrzebuje widczonego observable do komunikacji z klasa "Klinet"
+	 * @author Piotrek
+	 *
+	 */
+	private class AddToShopcartButtonsListener extends Observable{
+		
+		AbstractAction aa = new AbstractAction(){
+		    public void actionPerformed(ActionEvent e)
+		    {
+		        JTable table = (JTable)e.getSource();
+		        int modelRow = Integer.valueOf( e.getActionCommand() );
+		      //  ((DefaultTableModel)table.getModel()).removeRow(modelRow);
+		        System.out.println("PLUS");        
+		   }
+		};
+		
+		public AbstractAction getAbstractAction(){
+			return aa;
+		}
+		
+		
+		
+		
+	}
+
 
 
 	public SwitchButtonsListener getSb_listner() {

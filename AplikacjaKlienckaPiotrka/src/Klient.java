@@ -69,6 +69,7 @@ public class Klient implements Observer{
 			columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","ilosc_rdzeni","typ_gniazda","czestotliwosc_taktowania","stan_mag"};
 			tableName = "Procesor";
 			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "IloscRdzeni", "Typ Gniazda", "HZ", "StanMag"};
+			//ArrayList<String> ar = new ArrayList<String>(header);
 			break;
 		case "GUP":
 			break;
