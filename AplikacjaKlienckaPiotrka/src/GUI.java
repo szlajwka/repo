@@ -317,17 +317,30 @@ public class GUI {
 		        JTable table = (JTable)e.getSource();
 		        int modelRow = Integer.valueOf( e.getActionCommand() );
 		      //  ((DefaultTableModel)table.getModel()).removeRow(modelRow);
-		        System.out.println("PLUS");        
+		        int id = Integer.parseInt((String) (table.getValueAt(modelRow, 0)));
+		        int quantity =  Integer.parseInt((String) (table.getValueAt(modelRow, tableMainModel.getColumnCount()-2)));
+		        
+				setChanged();
+				notifyObservers(id+" "+quantity);
+
+		        System.out.println("ID "+id+"quantity "+quantity);       
+
 		   }
 		};
 		
 		public AbstractAction getAbstractAction(){
 			return aa;
 		}
+
 		
-		
-		
-		
+	}
+	
+	public AbstractAction getAAAddToShopcartButtonsListener(){
+		return addToShopcartButtonsListener.getAbstractAction();
+	}
+	
+	public AddToShopcartButtonsListener getAddToShopcartButtonsListener(){
+		return addToShopcartButtonsListener;
 	}
 
 
