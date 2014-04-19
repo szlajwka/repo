@@ -16,14 +16,15 @@ Union
 Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'DyskTwardy' as typ from DyskTwardy
 Union
 Select id, stan_mag,cena_netto,cena_brutto,model,waga,producent, 'PlytaGlowna' as typ from PlytaGlowna
-
+go
 create procedure wszystko as begin
 select * from wszystkieProdukty inner join producent on Producent.id=wszystkieprodukty.producent
 end
+go
 create procedure wyczerpane as begin
 select id, typ,cena_netto from  wszystkieprodukty where stan_mag=0
 end
-
+go
 create procedure dodaj @id int, @ilosc int, @tabela varchar(50) as begin
 declare @staraIlosc int
 if @tabela='ZestawPc'
@@ -82,7 +83,6 @@ update KartaGraficzna set stan_mag=@staraIlosc where id=@id
 end
 end
 go
-use AplikacjeSklepy
 create procedure getKartaGraficzna as begin
 select * from KartaGraficzna inner join Producent on KartaGraficzna.producent=Producent.Id
 end
@@ -121,6 +121,9 @@ go
 create procedure getZestawPc as begin
 select * from zestawpcview
 end
+go
 create procedure getItem @id int as begin
 select * from wszystkieprodukty where id=@id
 end
+go
+exec getDyskTwardy
