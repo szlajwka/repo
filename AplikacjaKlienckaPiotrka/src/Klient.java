@@ -3,6 +3,8 @@ import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,7 +23,7 @@ public class Klient implements Observer{
 	private GUI gui;
 	private Klient k = this;
 	private DAO dao;
-	private ArrayList<int[]> shopCart; //koszyk na zakupy 
+	private List<int[]> shopCart; //koszyk na zakupy 
 	
 	Klient(){
 		
@@ -46,7 +48,7 @@ public class Klient implements Observer{
 			e.printStackTrace();
 		}
 		
-		shopCart = new ArrayList<int[]>();
+		shopCart = Collections.synchronizedList(new ArrayList<int[]>());
 		
 	}
 
@@ -64,13 +66,43 @@ public class Klient implements Observer{
 			String[] s = ((String) arg1).split(" ");
 			int id = Integer.parseInt(s[0]);
 			int quantity = Integer.parseInt(s[1]);
-			onAddToSchopCart(id, quantity);
+			onAddToShopCart(id, quantity);
+		}
+		else if(arg0.equals(gui.getDeleteFromShopcartButtonsListener())){
+			int id = (int) arg1;
+			onDeleteFromShopCart(id);
+		}
+		else if(arg0.equals(gui.getToPayButtonListener())){
+			onToPay();
 		}
 		
 	}
 	
+	private void onToPay(){
+		System.out.println("LECIMY DO PLACENIA");
+		for(int[] item: shopCart){
+			System.out.println("ID: "+item[0]+" ilosc:"+item[1]);
+		}
+		
+	}
 	
-	private void onAddToSchopCart(int id, int quantity){
+	private void onDeleteFromShopCart(int id){
+		synchronized (shopCart) {  
+			for(int[] item: shopCart){
+				if(item[0]==id)
+					shopCart.remove(item);
+			}
+		}
+		
+		displayShopCart();
+	}
+	
+	
+	private void onAddToShopCart(int id, int quantity){
+		if(quantity==0){
+			gui.showInfoMessage("Ilosc jest rowna zero.");
+			return;
+		}
 		int[] tuple = {id,quantity};
 		shopCart.add(tuple);
 		displayShopCart();
@@ -83,8 +115,8 @@ public class Klient implements Observer{
 		//ArrayList<String[]> row = null;
 		String[] row = null;
 		ArrayList<String[]> al = new ArrayList<String[]>();
-		for(int[] touple: shopCart){
-			query = "exec getItem "+touple[0];	
+		for(int[] item: shopCart){
+			query = "exec getItem "+item[0];	
 			try {
 				row =dao.executeSelect(query, columnNames).get(0);
 			} catch (SQLException e) {
@@ -93,13 +125,12 @@ public class Klient implements Observer{
 			}
 			
 			row = Arrays.copyOf(row, row.length + 1);
-			row[row.length -1] =  touple[1]+"";
+			row[row.length -1] =  item[1]+"";
 			
 			al.add(row);
 			
 		}
 		
-		System.out.println("DISPLAY");
 		
 		gui.setDataShopcartTable(al, header);
 		

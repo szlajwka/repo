@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -50,14 +51,18 @@ public class GUI {
 	private DefaultTableModel tableShopcartModel;
 	
 	private AddToShopcartButtonsListener addToShopcartButtonsListener;
+	private DeleteFromShopcartButtonsListener deleteFromShopcartButtonsListener;
+	private ToPayButtonListener toPayButtonListener;
 	
 	
 	
 	
 	private SwitchButtonsListener sb_listner;
 	private JScrollPane scrollPane_1;
-	private JPanel panel;
+	private JPanel panel_tableShopcartCenter;
 	private JScrollPane scrollPane;
+	private JButton btn_toPay;
+	private JPanel panel_tableShopCartNorth;
 
 	/**
 	 * Launch the application.
@@ -94,6 +99,8 @@ public class GUI {
 	public void addListenersAndModels(){
 		sb_listner = new SwitchButtonsListener();
 		addToShopcartButtonsListener = new AddToShopcartButtonsListener();
+		deleteFromShopcartButtonsListener = new DeleteFromShopcartButtonsListener();
+		toPayButtonListener = new ToPayButtonListener();
 		
 		btnSwichCPU.addActionListener(sb_listner);
 		btnSwichHDD.addActionListener(sb_listner);
@@ -103,6 +110,7 @@ public class GUI {
 		btnSwichMotherboard.addActionListener(sb_listner);
 		btnSwichIO.addActionListener(sb_listner);
 		btnSwichRAM.addActionListener(sb_listner);
+		btn_toPay.addActionListener(toPayButtonListener);
 		
 		
 		tableMainModel = new DefaultTableModel(0,0){
@@ -129,6 +137,9 @@ public class GUI {
 	
 	public void setDataMainTable(ArrayList<String[]> al, String[] header){
 		
+		/*
+		 * Usuwanie zawartosci tabeli
+		 */
 		if (tableMainModel .getRowCount() > 0) {
 		    for (int i = tableMainModel.getRowCount() - 1; i > -1; i--) {
 		    	tableMainModel.removeRow(i);
@@ -136,6 +147,9 @@ public class GUI {
 		}
 		Vector<Object> data = null;
 		
+		/*
+		 * Zwiekszenie naglowka o dwa pola i dodanie nazw kolumn "Ilosc" oraz "Dodaj"
+		 */
 		header = Arrays.copyOf(header, header.length + 2);
 		header[header.length - 2] = "Ilosc";
 	    header[header.length - 1] = "Dodaj";
@@ -143,6 +157,9 @@ public class GUI {
 	    
 		tableMainModel.setColumnIdentifiers(header);
 		
+		/*
+		 * Wypelnienie tabeli wartosciami z arrayListy
+		 */
 		for(String[] s: al){
 			 data = new Vector<Object>();
 			 for(int i=0; i< s.length;i++){
@@ -155,7 +172,7 @@ public class GUI {
 		/**
 		 * Klasa z neta implementujaca przyciski w tabeli
 		 */
-		ButtonColumn buttonColumn = new ButtonColumn(tableMain, addToShopcartButtonsListener.getAbstractAction(),(header.length - 1));
+		new ButtonColumn(tableMain, addToShopcartButtonsListener.getAbstractAction(),(header.length - 1));
 	}
 	
 	public void setDataShopcartTable(ArrayList<String[]> al, String[] header){
@@ -165,23 +182,42 @@ public class GUI {
 		    	tableShopcartModel.removeRow(i);
 		    }
 		}
+		
+		header = Arrays.copyOf(header, header.length + 1);
+	    header[header.length - 1] = "Usun";
+		
+		
 		Vector<Object> data = null;
 		tableShopcartModel.setColumnIdentifiers(header);
 		for(String[] s: al){
 			 data = new Vector<Object>();
 			 for(int i=0; i< s.length;i++){
 				 data.add(s[i]);
+				
 			 }
+			 data.add("-");
 			 tableShopcartModel.addRow(data);
+			 
 		}
+		new ButtonColumn(tableShopcart, deleteFromShopcartButtonsListener.getAbstractAction(),(header.length - 1));
+
 	}
 	
+	
+	public void showErrorMessage(String message) {
+			JOptionPane.showMessageDialog(frame, message, "Blad!", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public void showInfoMessage(String message) {
+		JOptionPane.showMessageDialog(frame, message, "Informacja", JOptionPane.INFORMATION_MESSAGE);
+	}
 
 	
 	
 	public void addObservers(Observer o){
 		sb_listner.addObserver(o);
 		addToShopcartButtonsListener.addObserver(o);
+		deleteFromShopcartButtonsListener.addObserver(o);
 	}
 	
 	
@@ -259,15 +295,22 @@ public class GUI {
 		panel_main.add(panel_tableShopcart, gbc_panel_tableShopcart);
 		panel_tableShopcart.setLayout(new BorderLayout(0, 0));
 		
-		panel = new JPanel();
-		panel_tableShopcart.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
+		panel_tableShopcartCenter = new JPanel();
+		panel_tableShopcart.add(panel_tableShopcartCenter, BorderLayout.CENTER);
+		panel_tableShopcartCenter.setLayout(new BorderLayout(0, 0));
 		
 		scrollPane = new JScrollPane();
-		panel.add(scrollPane);
+		panel_tableShopcartCenter.add(scrollPane);
 		
 		tableShopcart = new JTable();
 		scrollPane.setViewportView(tableShopcart);
+		
+		panel_tableShopCartNorth = new JPanel();
+		panel_tableShopcart.add(panel_tableShopCartNorth, BorderLayout.SOUTH);
+		panel_tableShopCartNorth.setLayout(new BorderLayout(0, 0));
+		
+		btn_toPay = new JButton("Do kasy");
+		panel_tableShopCartNorth.add(btn_toPay, BorderLayout.EAST);
 	}
 	
 	
@@ -304,6 +347,19 @@ public class GUI {
 	}
 	
 	
+	
+	
+	private class ToPayButtonListener extends Observable implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			setChanged();
+			notifyObservers();
+			
+		}
+		
+	}
+	
 	/**
 	 * Klasa odpowiadajaca za obsluge przycisku "+" w tabeli z asortymentem. Musialem opakowac ta klase poniewaz potrzebuje widczonego observable do komunikacji z klasa "Klinet"
 	 * @author Piotrek
@@ -323,7 +379,7 @@ public class GUI {
 				setChanged();
 				notifyObservers(id+" "+quantity);
 
-		        System.out.println("ID "+id+"quantity "+quantity);       
+		      
 
 		   }
 		};
@@ -331,8 +387,32 @@ public class GUI {
 		public AbstractAction getAbstractAction(){
 			return aa;
 		}
-
+	}
+	/**
+	 * Klasa obslugujaca przycisk "-" w tabeli z koszykiem sluzacy do usuwania elementu z koszyka. 
+	 * @author Piotrek
+	 *
+	 */
+	private class DeleteFromShopcartButtonsListener extends Observable{
 		
+		AbstractAction aa = new AbstractAction(){
+		    public void actionPerformed(ActionEvent e)
+		    {
+		        JTable table = (JTable)e.getSource();
+		        int modelRow = Integer.valueOf( e.getActionCommand() );
+		      //  ((DefaultTableModel)table.getModel()).removeRow(modelRow);
+		        int id = Integer.parseInt((String) (table.getValueAt(modelRow, 0)));
+		        
+				setChanged();
+				notifyObservers(id);
+
+
+		   }
+		};
+		
+		public AbstractAction getAbstractAction(){
+			return aa;
+		}
 	}
 	
 	public AbstractAction getAAAddToShopcartButtonsListener(){
@@ -349,5 +429,16 @@ public class GUI {
 		return sb_listner;
 	}
 
+	public DeleteFromShopcartButtonsListener getDeleteFromShopcartButtonsListener() {
+		return deleteFromShopcartButtonsListener;
+	}
 
+
+	public JButton getBtn_toPay() {
+		return btn_toPay;
+	}
+
+	public ToPayButtonListener getToPayButtonListener() {
+		return toPayButtonListener;
+	}
 }
