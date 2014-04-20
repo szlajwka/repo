@@ -74,3 +74,8 @@ INSERT INTO dbo.Hurtownia values (3,300,10,'Naped','Hurtownia5');
 INSERT INTO dbo.Hurtownia values (6,800,10,'KartaGraficzna','Hurtownia2');
 INSERT INTO dbo.Hurtownia values (5,500,5,'KartaGraficzna','Hurtownia2');
 INSERT INTO dbo.Ram ( cena_netto, cena_brutto, waga, model, rodzaj, czestotliwosc_pracy, przepustowosc, stan_mag, producent) VALUES (65, 78, 24, '514','DDR2 DIMM', 667, 5300, 0, 18);
+insert into Klient values('JanKowalski','jankowalski@onet.pl','haslo','powstancow','4/1','58-200','Wroclaw')
+insert into Zamowienie values(CURRENT_TIMESTAMP,1)
+insert into Szczegoly values (1000000,1)
+insert into Szczegoly values (1000001,1)
+insert into koszt values(1,200,300,0,30,5,330)

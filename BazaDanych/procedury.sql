@@ -133,4 +133,18 @@ declare @idprod int
 select @idprod=producent from wszystkieprodukty where id=@id
 select nazwa,id from producent where id=@idprod
 end 
-exec getItem 8000000
+exec getItem 1
+go
+create procedure getZamowienie @nrklienta int as begin
+declare @id int
+set @id=@nrklienta
+select id,data_zamowienia from zamowienie where idklienta=@id
+end
+go
+create procedure getSzczegoly @idzamowienia int as begin
+select model, typ, producent.nazwa from wszystkieprodukty inner join producent on producent.id=wszystkieprodukty.producent inner join szczegoly on wszystkieprodukty.id=szczegoly.produkt_id where szczegoly.zamowienie=@idzamowienia
+end
+go
+create procedure getKoszt @idzamowienia int as begin
+select koszt_calkowity from koszt inner join szczegoly on koszt.szczegoly_id=szczegoly.id where szczegoly.zamowienie=@idzamowienia
+end
