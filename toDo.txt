@@ -1,0 +1,7 @@
+﻿Stan na 19:00, 21.04
+- przejscie z koszyka do finalizowania zakupów
+- wyszukiwarka produktow (nie mam na razie pomyslow jak to ciekawie rozwiazac, licze troche na Was z tym)
+- procedury + triggery do bazy (na wstawianie zamowien i szczegolow)
+- dodać zniżki na związane z wartością zamówienia i przelicznik kosztu przesylki wg wagi
+- dopracowac wyglady aplikacji
+- ewentualnie dodac tabele, ktora bedzie tylko przechowywala zamowienia z hurtowni (mysle ze moze sie przydac)
