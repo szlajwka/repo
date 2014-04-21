@@ -183,3 +183,8 @@ create procedure getIdfromEmail @email varchar(50) as
 begin
 select id from Klient where email=@email
 end
+go
+create procedure getKlient @id int as
+begin
+select * from Klient where id=@id
+end
