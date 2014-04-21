@@ -148,3 +148,35 @@ go
 create procedure getKoszt @idzamowienia int as begin
 select koszt_calkowity from koszt inner join szczegoly on koszt.szczegoly_id=szczegoly.id where szczegoly.zamowienie=@idzamowienia
 end
+go
+create procedure checkLogin @email varchar(50),@haslo varchar(50) as begin
+select * from Klient where @email=email and @haslo=haslo
+end
+exec checklogin 'firma@firma.com', 'haslo'
+go
+create trigger rejestracja on Klient instead of insert as 
+begin
+declare @i int
+select @i=count(Klient.email) from Klient inner join inserted on Klient.email=inserted.email
+if @i>0
+begin
+RAISERROR (15600,-1,-1, 'klient o takim mailu juz istnieje');
+end
+if @i=0
+begin
+declare @email varchar(50)
+declare @haslo varchar(50)
+declare @ulica varchar(50)
+declare @nazwa varchar(50)
+declare @nr varchar(50)
+declare @kod varchar(10)
+declare @miejscowosc varchar(50)
+Select @email=email,@haslo=haslo,@ulica=ulica,@nazwa=nazwa,@nr=nr_domu,@kod=kod_pocztowy,@miejscowosc=miejscowosc from inserted
+insert into Klient values(@nazwa,@email,@haslo,@ulica,@nr,@kod,@miejscowosc)
+end
+end
+go
+create procedure addKlient @nazwa varchar(50),@email varchar(50),@haslo varchar(50),@ulica varchar(50),@nr varchar(50),@kod varchar(50), @miejscowosc varchar(50) as 
+begin
+insert into Klient values(@nazwa,@email,@haslo,@ulica,@nr,@kod,@miejscowosc)
+end
