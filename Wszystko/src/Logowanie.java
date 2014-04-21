@@ -95,8 +95,9 @@ public class Logowanie extends JFrame {
                         String result=rs.getString("Id");
                         conn.close();
                         dispose();
-                        new Klient();
+                        new Klient(mail);
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                         JOptionPane.showMessageDialog(null, "Nieprawidlowy login lub haslo", "Blad", JOptionPane.ERROR_MESSAGE);
                         email.setText("");
                         passwrd.setText("");

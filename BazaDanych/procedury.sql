@@ -133,7 +133,6 @@ declare @idprod int
 select @idprod=producent from wszystkieprodukty where id=@id
 select nazwa,id from producent where id=@idprod
 end 
-exec getItem 1
 go
 create procedure getZamowienie @nrklienta int as begin
 declare @id int
@@ -152,7 +151,6 @@ go
 create procedure checkLogin @email varchar(50),@haslo varchar(50) as begin
 select * from Klient where @email=email and @haslo=haslo
 end
-exec checklogin 'firma@firma.com', 'haslo'
 go
 create trigger rejestracja on Klient instead of insert as 
 begin
@@ -179,4 +177,9 @@ go
 create procedure addKlient @nazwa varchar(50),@email varchar(50),@haslo varchar(50),@ulica varchar(50),@nr varchar(50),@kod varchar(50), @miejscowosc varchar(50) as 
 begin
 insert into Klient values(@nazwa,@email,@haslo,@ulica,@nr,@kod,@miejscowosc)
+end
+go
+create procedure getIdfromEmail @email varchar(50) as
+begin
+select id from Klient where email=@email
 end

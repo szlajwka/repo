@@ -1,6 +1,7 @@
 
 import java.awt.EventQueue;
 import java.lang.reflect.Array;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,11 +15,7 @@ public class Klient implements Observer{
 	
 
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new Klient();
-
-	}
+	
 	
 	
 	private GUI gui;
@@ -27,13 +24,23 @@ public class Klient implements Observer{
 	private List<int[]> shopCart; //koszyk na zakupy 
         private int currentWeigh=0;
 	private int currentCost=0;
-	Klient(){
-		
+         String email;
+	Klient(String email){
+		this.email=email;
+                try{
+                        dao = new DAO("jdbc:sqlserver://localhost:1433;user=sa;password=haslo;database=AplikacjeSklepy");
+                        
+                }catch(SQLException e){
+                    
+                }
 		EventQueue.invokeLater(new Runnable() {
 		@Override
 		public void run() {
 			try {
-				gui = new GUI();
+                                ResultSet rs=dao.execute("exec getIdfromemail '"+email+"'");
+                                 rs.next();
+                                String id=rs.getString("Id");
+				gui = new GUI(id);
 				gui.setVisible(true);
 
 				
@@ -43,12 +50,19 @@ public class Klient implements Observer{
 			gui.addObservers(k);
 		}});
 		
-		try {
+		/*try {
 			dao = new DAO("jdbc:sqlserver://localhost:1433;user=sa;password=haslo;database=AplikacjeSklepy");
+                        ResultSet rs=dao.execute("exec getIdfromemail '"+email+"'");
+                        rs.next();
+                        String id=rs.getString("Id");
+                        gui.idKlienta=id;
+                        
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}catch(NullPointerException e){
+                    e.printStackTrace();
+                }*/
 		
 		shopCart = Collections.synchronizedList(new ArrayList<int[]>());
 		
@@ -99,7 +113,7 @@ public class Klient implements Observer{
 	
 	
 	private void onAddToShopCart(int id, int quantity){
-		if(quantity>=0){
+		if(quantity<=0){
 			gui.showInfoMessage("Ilosc jest rowna zero.");
 			return;
 		}

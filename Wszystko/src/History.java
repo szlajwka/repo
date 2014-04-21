@@ -55,6 +55,8 @@ public class History extends JFrame{
                      createFrame(item);
                  } catch (SQLException ex) {
                      Logger.getLogger(History.class.getName()).log(Level.SEVERE, null, ex);
+                 } catch(NullPointerException ex){
+                     JOptionPane.showMessageDialog(null, "Nie wykonales zadnych zakupow", "", JOptionPane.INFORMATION_MESSAGE);
                  }
              }
         });
@@ -116,7 +118,4 @@ public class History extends JFrame{
 
     }
 
-    public static void main(String []args) throws ClassNotFoundException, SQLException{
-        new History(Connect.getConnection(),"1").setVisible(true);
-    }
 }

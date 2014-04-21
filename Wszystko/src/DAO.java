@@ -7,33 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DAO {
-	
-	public static void main(String args[]){
-		DAO dao = null;
-		try {
-			//dao = new DAO("jdbc:mysql://127.0.0.1:3306/projekt", "root", "", "com.mysql.jdbc.Driver");
-			dao = new DAO("jdbc:sqlserver://localhost:1433/AplikacjeSklepy", "sa", "haslo", "com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		String[] columnNames = {"nazwa", "kraj", "specjalizacja"};
-		String query = "SELECT * FROM Producent";
-		ArrayList<String[]> al = null;
-		try {
-			al = dao.executeSelect(query, columnNames);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(String[] s: al){
-			for(int i = 0; i < s.length ;i++){
-				System.out.print(s[i]+" ");
-			}
-			System.out.println();
-		}
-	}
+
 
 	private Connection connection;
 	private Statement statement;
@@ -72,7 +46,12 @@ public class DAO {
 		
 		//connection.close();
 	}
-
+        
+        public ResultSet execute(String query)throws SQLException{
+            statement=connection.createStatement();
+            ResultSet rs=statement.executeQuery(query);
+            return rs;
+        }
 	
 	/**
 	 * Wykonuje zapytanie typu select (czyli ze zwracaniem)

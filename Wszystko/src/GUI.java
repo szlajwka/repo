@@ -2,26 +2,38 @@
 import java.awt.BorderLayout;
 
 import java.awt.Button;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -29,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -54,7 +67,7 @@ public class GUI {
 	private DeleteFromShopcartButtonsListener deleteFromShopcartButtonsListener;
 	private ToPayButtonListener toPayButtonListener;
 	
-	
+	private String idKlienta;
 	
 	
 	private SwitchButtonsListener sb_listner;
@@ -64,27 +77,13 @@ public class GUI {
 	private JButton btn_toPay;
 	private JPanel panel_tableShopCartNorth;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GUI window = new GUI();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+        
 
 	/**
 	 * Create the application.
 	 */
-	public GUI() {
-		
+	public GUI(String id) {
+		this.idKlienta=id;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch (Exception e) {
@@ -134,7 +133,6 @@ public class GUI {
 		
 		
 	}
-	
 	
 	public void setDataMainTable(ArrayList<String[]> al, String[] header){
 		
@@ -231,6 +229,7 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame("Computer_Land");
+                frame.setResizable(false);
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -319,11 +318,12 @@ public class GUI {
                 JMenuBar menuBar=new JMenuBar();
                 JMenu historia=new JMenu("Historia Zamowien");
                 JMenu wyloguj=new JMenu("Wyloguj");
-                
+                JMenu mojedane=new JMenu("Moje dane");
+                        
                 historia.addMouseListener(new MouseAdapter(){
                    public void mouseClicked(MouseEvent e) {
                        try{
-                            new History(Connect.getConnection(),"1").setVisible(true);
+                            new History(Connect.getConnection(),idKlienta).setVisible(true);
                         }catch(Exception e1){
                             e1.printStackTrace();
                         };
@@ -340,7 +340,55 @@ public class GUI {
                          }
                     }
                 });
+                
+                mojedane.addMouseListener(new MouseAdapter(){
+                    public void mouseClicked(MouseEvent e) {
+                        JFrame dane=new JFrame("Moje dane");
+                        dane.setLocation(300,300);
+                        dane.setSize(300,150);
+                        dane.setResizable(false);
+                        dane.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                        dane.setLayout(new GridLayout(1,1));
+                        
+                        try {
+                            Connection conn=Connect.getConnection();
+                            Statement st=conn.createStatement();
+                            ResultSet rs=st.executeQuery("exec getKlient "+idKlienta);
+                            rs.next();
+                            Vector<String> vt=new Vector<String>();
+                            
+                            
+                            vt.add(rs.getString("nazwa"));
+                            vt.add(rs.getString("email"));
+                            vt.add(rs.getString("ulica"));
+                            vt.add(rs.getString("nr_domu"));
+                            vt.add(rs.getString("kod_pocztowy"));
+                            vt.add(rs.getString("miejscowosc"));
+                            vt.add("ID: "+rs.getString("id"));
+                            
+                            JList list=new JList(vt);
+                            list.setFont(Font.getFont("ComicSansMS"));
+                            list.setOpaque(true);
+                            list.setBackground(Color.getHSBColor(51,255,255));
+                            
+                            DefaultListCellRenderer renderer =  (DefaultListCellRenderer)list.getCellRenderer();  
+                            renderer.setHorizontalAlignment(JLabel.CENTER);  
+                            
+                            dane.add(list);
+                            conn.close();
+                            dane.setVisible(true);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    }
+                    
+                });
+                
                 menuBar.add(historia);
+                menuBar.add(mojedane);
                 menuBar.add(wyloguj);
                 frame.setJMenuBar(menuBar);
               
