@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.BoxLayout;
+import javax.swing.JTextField;
 
 
 public class GUI {
@@ -55,9 +56,7 @@ public class GUI {
 	private AddToShopcartButtonsListener addToShopcartButtonsListener;
 	private DeleteFromShopcartButtonsListener deleteFromShopcartButtonsListener;
 	private ToPayButtonListener toPayButtonListener;
-	
-	
-	
+	private SearchButtonListener searchButtonListener;
 	
 	private SwitchButtonsListener sb_listner;
 	private JScrollPane scrollPane_1;
@@ -65,6 +64,9 @@ public class GUI {
 	private JScrollPane scrollPane;
 	private JButton btn_toPay;
 	private JPanel panel_tableShopCartNorth;
+	private JPanel panel_search;
+	private JTextField textField_search;
+	private JButton btn_search;
 
 	/**
 	 * Launch the application.
@@ -103,6 +105,7 @@ public class GUI {
 		addToShopcartButtonsListener = new AddToShopcartButtonsListener();
 		deleteFromShopcartButtonsListener = new DeleteFromShopcartButtonsListener();
 		toPayButtonListener = new ToPayButtonListener();
+		searchButtonListener = new SearchButtonListener();
 		
 		btnSwichCPU.addActionListener(sb_listner);
 		btnSwichHDD.addActionListener(sb_listner);
@@ -113,6 +116,7 @@ public class GUI {
 		btnSwichIO.addActionListener(sb_listner);
 		btnSwichRAM.addActionListener(sb_listner);
 		btn_toPay.addActionListener(toPayButtonListener);
+		btn_search.addActionListener(searchButtonListener);
 		
 		
 		tableMainModel = new DefaultTableModel(0,0){
@@ -134,6 +138,13 @@ public class GUI {
 		tableShopcart.setModel(tableShopcartModel);
 		
 		
+	}
+	
+	public void addObservers(Observer o){
+		sb_listner.addObserver(o);
+		addToShopcartButtonsListener.addObserver(o);
+		deleteFromShopcartButtonsListener.addObserver(o);
+		searchButtonListener.addObserver(o);
 	}
 	
 	
@@ -216,13 +227,6 @@ public class GUI {
 
 	
 	
-	public void addObservers(Observer o){
-		sb_listner.addObserver(o);
-		addToShopcartButtonsListener.addObserver(o);
-		deleteFromShopcartButtonsListener.addObserver(o);
-	}
-	
-	
 	public void setVisible(boolean b){
 		frame.setVisible(b);
 	}
@@ -235,6 +239,17 @@ public class GUI {
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		panel_search = new JPanel();
+		frame.getContentPane().add(panel_search, BorderLayout.NORTH);
+		panel_search.setLayout(new BorderLayout(0, 0));
+		
+		btn_search = new JButton("Szukaj");
+		panel_search.add(btn_search, BorderLayout.WEST);
+		
+		textField_search = new JTextField();
+		panel_search.add(textField_search);
+		textField_search.setColumns(10);
 		
 		JPanel panel_main = new JPanel();
 		frame.getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -372,6 +387,18 @@ public class GUI {
 		
 	}
 	
+	private class SearchButtonListener extends Observable implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			String text = textField_search.getText();
+			setChanged();
+			notifyObservers(text);
+			
+		}
+		
+	}
+	
 	/**
 	 * Klasa odpowiadajaca za obsluge przycisku "+" w tabeli z asortymentem. Musialem opakowac ta klase poniewaz potrzebuje widczonego observable do komunikacji z klasa "Klinet"
 	 * @author Piotrek
@@ -427,6 +454,9 @@ public class GUI {
 		}
 	}
 	
+	
+	
+	
 	public AbstractAction getAAAddToShopcartButtonsListener(){
 		return addToShopcartButtonsListener.getAbstractAction();
 	}
@@ -453,4 +483,9 @@ public class GUI {
 	public ToPayButtonListener getToPayButtonListener() {
 		return toPayButtonListener;
 	}
+
+	public SearchButtonListener getSearchButtonListener() {
+		return searchButtonListener;
+	}
+
 }

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -74,6 +75,82 @@ public class Klient implements Observer{
 		else if(arg0.equals(gui.getToPayButtonListener())){
 			onToPay();
 		}
+		else if(arg0.equals(gui.getSearchButtonListener())){
+			String searchText = (String) arg1;
+			onSearch(searchText);
+		}
+		
+	}
+	
+	
+	private void onSearch(String searchText){
+		System.out.println(searchText);
+		String[] columnNames = {"id",	"stan_mag",	"cena_netto",	"cena_brutto",	"model",	"waga",	"typ",		"nazwa",	"kraj",	"specjalizacja"};
+		
+		String query = "exec wszystko";
+		
+		ArrayList<String[]> al = null;
+		try {
+			al = dao.executeSelect(query, columnNames);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ArrayList<String> machingIDs = new ArrayList<String>();
+		
+		String regex = "(?i).*"+searchText+".*";
+		
+		for(String[] record: al){
+			if(record[4].matches(regex) || record[6].matches(regex) || record[7].matches(regex) || record[8].matches(query) || record[9].matches(regex)){
+				machingIDs.add(record[0]);
+			}
+		}
+		
+		
+		ArrayList<String[]> searchedRecords = new ArrayList<String[]>();
+		
+		String[] header = {"ID", "StanMag", "Cena Netto", "Cena Brutto", "Model", "Waga", "Producent"};
+		columnNames = new String[] {"id",	"stan_mag",	"cena_netto",	"cena_brutto",	"model",	"waga",	"NazwaProducenta"};
+		
+		for(String id: machingIDs){
+			query = "exec getItem "+id;
+			try {
+				al = dao.executeSelect(query, columnNames);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			searchedRecords.addAll(al);
+			
+		}	
+		
+		gui.setDataMainTable(searchedRecords, header);
+
+		
+		
+		
+		/*
+		* 	ArrayList<Student> maching = new ArrayList<Student>();
+			ArrayList<Student> list = (ArrayList<Student>) course.getStudentsList();
+			String regex = "(?i).*"+newValue+".*";
+			
+			for(Student s: list){
+			if(s.getShortedIndexNumber().matches(regex) || s.getFirstNames().matches(regex) || s.getLastname().matches(regex)){
+			maching.add(s);
+			}
+			}	
+			if(maching.size()>0 && maching.size() <=8 ){
+			gui.showSearchTextFieldPopup(maching);
+			}
+			else{
+			gui.showSearchTextFieldPopup(null);
+			}	
+		 */
+		
+		
+		
+		
 		
 	}
 	
@@ -86,19 +163,24 @@ public class Klient implements Observer{
 	}
 	
 	private void onDeleteFromShopCart(int id){
-		synchronized (shopCart) {  
-			for(int[] item: shopCart){
-				if(item[0]==id)
-					shopCart.remove(item);
+		try{
+			synchronized (shopCart) {  
+				for(int[] item: shopCart){
+					if(item[0]==id)
+						shopCart.remove(item);
+				}
 			}
+			
+			displayShopCart();
+		}catch(ConcurrentModificationException e){
+			System.out.println("ConcurrentModificationException, ale nie wiem dlaczego. mimo to dziala");
 		}
-		
-		displayShopCart();
+
 	}
 	
 	
 	private void onAddToShopCart(int id, int quantity){
-		if(quantity>=0){
+		if(quantity<=0){
 			gui.showInfoMessage("Ilosc jest rowna zero.");
 			return;
 		}
@@ -154,21 +236,44 @@ public class Klient implements Observer{
 			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Takt. Rdzenia", "Takt. Pamieci", "Producent", "StanMag", "Procudent"};
 			break;
 		case "HDD":
+                        columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","model","typ","pojemnosc","szerokosc","interfejs", "predkosc_obrotowa","stan_mag","nazwa"};
+			query = "exec getDyskTwardy";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Typ", "Pojemnosc", "Szerokosc", "Interfejs", "Predkosc Obrotowa","StanMag","Producent"};
+
 			break;
 		case "IO":
+                        columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","rodzaj","model","typ","stan_mag", "nazwa"};
+			query = "exec getPeryferia";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Rodzaj", "Model", "Typ", "StanMag", "Procudent"};
 			break;
 		case "Monitor":
+                        columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","model","typ","przekatna","rodzaj_podswietlenia","rozdzielczosc", "stan_mag","Producent"};
+			query = "exec getMonitor";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Typ", "Przekatna", "RodzajPodswietlenia","Rozdzielczosc", "StanMag", "Procudent"};
 			break;
 		case "ODD":
-			columnNames = new String[] {"Id","cena_netto","cena_brutto","waga","model","typ","interfejs","stan_mag"};
-			query = "SELECT * FROM Naped";
-			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Typ", "Interfejs", "StanMag"};
+			columnNames = new String[] {"Id","cena_netto","cena_brutto","waga","model","typ","interfejs","stan_mag","nazwa"};
+			query = "exec getNaped";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Typ", "Interfejs", "StanMag","Producent"};
 			break;
 		case "RAM":
+                        columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","model","rodzaj","czestotliwosc_pracy","przepustowosc","stan_mag", "nazwa"};
+			query = "exec getRam";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Rodzaj", "CzestotliwoscPracy", "Przepustowosc", "StanMag", "Procudent"};
+
 			break;
-		case "MotherBoard":
+		case "Motherboard":
+                        columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","model","gniazdo_procesora","chipset","rodzaj_pamieci","karta_graficzna","karta_sieciowa","stan_mag", "nazwa"};
+			query = "exec getPlytaGlowna";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "GniazdoProcesora", "Chipset", "RodzajPamieci","KartaGraficzna","KartaSieciowa", "StanMag", "Procudent"};
 			break;
-		}
+		
+                case "Zestawy":
+                        columnNames = new String[] {"Id","cena_netto", "cena_brutto", "waga","model","ModelNapedu","ModelProcesora","ModelRam","ModelKarty","ModelDysku","modelMonitora"," ModelPlyty","stan_mag", "nazwa"};
+			query = "exec getZestawPC";
+			header = new String[] {"ID", "Cena Netto", "Cena Brutto", "Waga", "Model", "Naped", "Procesor", "Ram","KartaGraficzna","Dysk","Monitor","PlytaGlowna", "StanMag", "Procudent"};
+                        break;
+                }
 		
 
 		ArrayList<String[]> al = null;
