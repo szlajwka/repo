@@ -145,6 +145,7 @@ public class GUI {
 		addToShopcartButtonsListener.addObserver(o);
 		deleteFromShopcartButtonsListener.addObserver(o);
 		searchButtonListener.addObserver(o);
+		toPayButtonListener.addObserver(o);
 	}
 	
 	
@@ -380,6 +381,8 @@ public class GUI {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			
+			System.out.println("TOPAy");
 			setChanged();
 			notifyObservers();
 			

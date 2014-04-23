@@ -56,6 +56,7 @@ public class Klient implements Observer{
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
+		System.out.println("UP");
 		
 		if(arg0.equals(gui.getSb_listner())){
 			String compName = (String) arg1;
@@ -125,32 +126,7 @@ public class Klient implements Observer{
 			
 		}	
 		
-		gui.setDataMainTable(searchedRecords, header);
-
-		
-		
-		
-		/*
-		* 	ArrayList<Student> maching = new ArrayList<Student>();
-			ArrayList<Student> list = (ArrayList<Student>) course.getStudentsList();
-			String regex = "(?i).*"+newValue+".*";
-			
-			for(Student s: list){
-			if(s.getShortedIndexNumber().matches(regex) || s.getFirstNames().matches(regex) || s.getLastname().matches(regex)){
-			maching.add(s);
-			}
-			}	
-			if(maching.size()>0 && maching.size() <=8 ){
-			gui.showSearchTextFieldPopup(maching);
-			}
-			else{
-			gui.showSearchTextFieldPopup(null);
-			}	
-		 */
-		
-		
-		
-		
+		gui.setDataMainTable(searchedRecords, header);		
 		
 	}
 	
